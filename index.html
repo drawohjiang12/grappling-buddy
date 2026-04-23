@@ -8,7 +8,6 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
 html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
-
 #gb-panel {
   position: fixed; bottom: 0; right: 0; width: 100%; height: 100%;
   background: #0f0f0f; display: flex; flex-direction: column; overflow: hidden;
@@ -27,7 +26,6 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
 #gb-sub { font-size: 10px; color: #666; margin-top: 2px; }
 .gb-dot { display: inline-block; width: 5px; height: 5px; background: #4caf50; border-radius: 50%; margin-right: 4px; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
-
 #gb-log {
   flex: 1; overflow-y: auto; padding: 12px 12px 6px;
   display: flex; flex-direction: column; gap: 10px;
@@ -49,12 +47,10 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
 }
 .msg.bot  .bubble { background:#1c1c1c; border:1px solid #2a2a2a; border-bottom-left-radius:3px; color:#e8e4dc; }
 .msg.user .bubble { background:#e8472a; border-bottom-right-radius:3px; color:#fff; }
-
 .typing .bubble { display:flex; gap:4px; align-items:center; padding: 12px; }
 .tdot { width:5px;height:5px;background:#555;border-radius:50%;animation:blink 1.2s infinite; }
 .tdot:nth-child(2){animation-delay:0.2s;} .tdot:nth-child(3){animation-delay:0.4s;}
 @keyframes blink { 0%,80%,100%{opacity:0.3;transform:scale(0.85);} 40%{opacity:1;transform:scale(1);} }
-
 #gb-chips { padding: 0 12px 8px; display: flex; gap: 5px; flex-wrap: wrap; }
 .chip {
   background: transparent; border: 1px solid #2a2a2a; color: #777;
@@ -62,7 +58,6 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
   cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
 .chip:hover { border-color:#e8472a; color:#e8e4dc; background:rgba(232,71,42,0.08); }
-
 #gb-input-row {
   display: flex; gap: 7px; padding: 8px 10px 12px;
   border-top: 1px solid #1e1e1e; background: #0f0f0f; flex-shrink: 0;
@@ -82,6 +77,14 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
 #gb-send:hover { background: #c73a1f; }
 #gb-send:active { transform: scale(0.92); }
 #gb-send:disabled { background: #2a2a2a; cursor: not-allowed; }
+
+/* Lead saved confirmation */
+.lead-saved {
+  font-size: 11px; color: #4caf50; text-align: center;
+  padding: 6px 12px; background: rgba(76,175,80,0.08);
+  border: 1px solid rgba(76,175,80,0.2); border-radius: 8px;
+  margin: 0 12px;
+}
 </style>
 </head>
 <body>
@@ -116,9 +119,13 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
     </button>
   </div>
 </div>
+
 <script>
 const WORKER = "https://grapplingbuddy.howie-b81.workers.dev";
+const SHEETS_WEBHOOK = "https://script.google.com/macros/s/AKfycbxYqQ4uTBYA1gVZMYxBhUoidpHjbyY66IktBGP4dPlLI2zMXI5Y_FY3X3nvm_qC6YA/exec";
+
 let history = [];
+let leadSaved = false;
 
 function ask(chip) {
   document.getElementById('gb-chips').style.display = 'none';
@@ -135,8 +142,7 @@ function addMsg(role, text) {
   av.textContent = role === 'bot' ? 'GB' : 'YOU';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  // Clean up markdown bold formatting
-  bubble.textContent = text.replace(/\*\*(.*?)\*\*/g, '$1');
+  bubble.textContent = text;
   wrap.appendChild(av);
   wrap.appendChild(bubble);
   log.appendChild(wrap);
@@ -158,6 +164,45 @@ function addTyping() {
   log.scrollTop = log.scrollHeight;
 }
 
+function showLeadSaved() {
+  const log = document.getElementById('gb-log');
+  const div = document.createElement('div');
+  div.className = 'lead-saved';
+  div.textContent = '✓ Info saved — The Coop team will be in touch!';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function saveLead(data) {
+  if (leadSaved) return;
+  leadSaved = true;
+  fetch(SHEETS_WEBHOOK, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+  showLeadSaved();
+}
+
+function parseReply(raw) {
+  // Check for LEADDATA block
+  const marker = 'LEADDATA:';
+  const idx = raw.indexOf(marker);
+  if (idx !== -1) {
+    const jsonStr = raw.substring(idx + marker.length).trim();
+    const cleanText = raw.substring(0, idx).trim();
+    try {
+      const leadData = JSON.parse(jsonStr);
+      if (leadData.name && (leadData.email || leadData.phone)) {
+        saveLead(leadData);
+      }
+    } catch(e) {}
+    return cleanText;
+  }
+  return raw;
+}
+
 async function send() {
   const input = document.getElementById('gb-input');
   const btn = document.getElementById('gb-send');
@@ -176,11 +221,12 @@ async function send() {
       body: JSON.stringify({ messages: history })
     });
     const data = await res.json();
-    const reply = (data.content || []).find(b => b.type === 'text')?.text
+    const rawReply = (data.content || []).find(b => b.type === 'text')?.text
       || 'Sorry! Reach us at info@thecoopbjj.com or (949) 294-7172.';
     document.getElementById('typing')?.remove();
-    addMsg('bot', reply);
-    history.push({ role: 'assistant', content: reply });
+    const cleanReply = parseReply(rawReply);
+    addMsg('bot', cleanReply);
+    history.push({ role: 'assistant', content: cleanReply });
   } catch(e) {
     document.getElementById('typing')?.remove();
     addMsg('bot', 'Connection issue. Contact info@thecoopbjj.com or (949) 294-7172 🥋');
