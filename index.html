@@ -176,12 +176,9 @@ function showLeadSaved() {
 function saveLead(data) {
   if (leadSaved) return;
   leadSaved = true;
-  fetch(SHEETS_WEBHOOK, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).catch(() => {});
+  const params = new URLSearchParams(data);
+  fetch(SHEETS_WEBHOOK + '?' + params.toString(), { mode: 'no-cors' })
+    .catch(() => {});
   showLeadSaved();
 }
 
