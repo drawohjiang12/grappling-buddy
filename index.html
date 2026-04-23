@@ -1,381 +1,190 @@
-<!-- GRAPPLING BUDDY — Floating Chat Widget for The Coop BJJ -->
-<!-- Paste this entire block into Squarespace > Settings > Advanced > Code Injection > Footer -->
-<!-- OR add as a Code Block on your Home page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grappling Buddy</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-
 <style>
-#gb-widget * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
-
-#gb-fab {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 60px;
-  height: 60px;
-  background: #e8472a;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 24px rgba(232,71,42,0.5);
-  z-index: 99999;
-  border: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-#gb-fab:hover { transform: scale(1.08); box-shadow: 0 6px 32px rgba(232,71,42,0.65); }
-#gb-fab .gb-icon-close { display: none; }
-#gb-fab.open .gb-icon-chat { display: none; }
-#gb-fab.open .gb-icon-close { display: block; }
-
-#gb-badge {
-  position: fixed;
-  bottom: 98px;
-  right: 24px;
-  background: #fff;
-  color: #0a0a0a;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  z-index: 99998;
-  white-space: nowrap;
-  animation: gb-bounce 0.4s ease 1.2s both;
-  letter-spacing: 0.2px;
-  transition: opacity 0.5s;
-}
-@keyframes gb-bounce {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
 #gb-panel {
-  position: fixed;
-  bottom: 100px;
-  right: 28px;
-  width: 360px;
-  height: 520px;
-  background: #0f0f0f;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  z-index: 99997;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px #2a2a2a;
-  overflow: hidden;
-  transform: scale(0.85) translateY(20px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
-  transform-origin: bottom right;
+  position: fixed; bottom: 0; right: 0; width: 100%; height: 100%;
+  background: #0f0f0f; display: flex; flex-direction: column; overflow: hidden;
 }
-#gb-panel.open {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
 #gb-header {
-  background: #141414;
-  border-bottom: 1px solid #2a2a2a;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
+  background: #141414; border-bottom: 1px solid #2a2a2a;
+  padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
 }
-#gb-header-avatar {
-  width: 38px;
-  height: 38px;
-  background: #e8472a;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  color: #fff;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  box-shadow: 0 0 14px rgba(232,71,42,0.3);
+#gb-avatar {
+  width: 38px; height: 38px; background: #e8472a; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: #fff;
+  flex-shrink: 0; box-shadow: 0 0 14px rgba(232,71,42,0.3);
 }
-#gb-header-info { flex: 1; min-width: 0; }
-#gb-header-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 17px;
-  letter-spacing: 1.5px;
-  color: #e8e4dc;
-  line-height: 1;
-}
-#gb-header-sub { font-size: 11px; color: #666; margin-top: 2px; }
-.gb-dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  background: #4caf50;
-  border-radius: 50%;
-  margin-right: 4px;
-  animation: gb-pulse 2s infinite;
-}
-@keyframes gb-pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
-
+#gb-name { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: #e8e4dc; line-height: 1; }
+#gb-sub { font-size: 11px; color: #666; margin-top: 2px; }
+.gb-dot { display: inline-block; width: 6px; height: 6px; background: #4caf50; border-radius: 50%; margin-right: 4px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
 #gb-log {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 14px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  scrollbar-width: thin;
-  scrollbar-color: #2a2a2a transparent;
+  flex: 1; overflow-y: auto; padding: 14px 14px 8px;
+  display: flex; flex-direction: column; gap: 12px;
+  scrollbar-width: thin; scrollbar-color: #2a2a2a transparent;
 }
-.gb-msg { display: flex; gap: 8px; animation: gb-fadein 0.2s ease; }
-@keyframes gb-fadein { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
-.gb-msg.gb-user { flex-direction: row-reverse; }
-.gb-av {
+.msg { display: flex; gap: 8px; animation: fadein 0.2s ease; }
+@keyframes fadein { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+.msg.user { flex-direction: row-reverse; }
+.av {
   width: 28px; height: 28px; border-radius: 50%;
   font-size: 10px; font-family: 'Bebas Neue', sans-serif;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.gb-msg.gb-bot  .gb-av { background: #e8472a; color: #fff; }
-.gb-msg.gb-user .gb-av { background: #2a2a2a; color: #aaa; }
-.gb-bubble {
-  max-width: 78%;
-  padding: 10px 13px;
-  border-radius: 14px;
-  font-size: 13px;
-  line-height: 1.55;
-  white-space: pre-wrap;
+.msg.bot .av  { background: #e8472a; color: #fff; }
+.msg.user .av { background: #2a2a2a; color: #aaa; }
+.bubble { max-width: 78%; padding: 10px 13px; border-radius: 14px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+.msg.bot  .bubble { background:#1c1c1c; border:1px solid #2a2a2a; border-bottom-left-radius:4px; color:#e8e4dc; }
+.msg.user .bubble { background:#e8472a; border-bottom-right-radius:4px; color:#fff; }
+.typing .bubble { display:flex; gap:4px; align-items:center; }
+.tdot { width:6px;height:6px;background:#555;border-radius:50%;animation:blink 1.2s infinite; }
+.tdot:nth-child(2){animation-delay:0.2s;} .tdot:nth-child(3){animation-delay:0.4s;}
+@keyframes blink { 0%,80%,100%{opacity:0.3;transform:scale(0.85);} 40%{opacity:1;transform:scale(1);} }
+#gb-chips { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  background: transparent; border: 1px solid #2a2a2a; color: #777;
+  padding: 5px 11px; border-radius: 20px; font-size: 11px;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
-.gb-msg.gb-bot  .gb-bubble { background:#1c1c1c; border:1px solid #2a2a2a; border-bottom-left-radius:4px; color:#e8e4dc; }
-.gb-msg.gb-user .gb-bubble { background:#e8472a; border-bottom-right-radius:4px; color:#fff; }
-
-.gb-typing .gb-bubble { display:flex; gap:4px; align-items:center; }
-.gb-tdot { width:6px;height:6px;background:#555;border-radius:50%;animation:gb-blink 1.2s infinite; }
-.gb-tdot:nth-child(2){animation-delay:0.2s;} .gb-tdot:nth-child(3){animation-delay:0.4s;}
-@keyframes gb-blink { 0%,80%,100%{opacity:0.3;transform:scale(0.85);} 40%{opacity:1;transform:scale(1);} }
-
-#gb-chips {
-  padding: 0 14px 10px;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.gb-chip {
-  background: transparent;
-  border: 1px solid #2a2a2a;
-  color: #777;
-  padding: 5px 11px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.gb-chip:hover { border-color:#e8472a; color:#e8e4dc; background:rgba(232,71,42,0.08); }
-
+.chip:hover { border-color:#e8472a; color:#e8e4dc; background:rgba(232,71,42,0.08); }
 #gb-input-row {
-  display: flex;
-  gap: 8px;
-  padding: 10px 12px 14px;
-  border-top: 1px solid #1e1e1e;
-  background: #0f0f0f;
-  flex-shrink: 0;
+  display: flex; gap: 8px; padding: 10px 12px 14px;
+  border-top: 1px solid #1e1e1e; background: #0f0f0f; flex-shrink: 0;
 }
 #gb-input {
-  flex: 1;
-  background: #1c1c1c;
-  border: 1px solid #2a2a2a;
-  border-radius: 10px;
-  padding: 9px 12px;
-  color: #e8e4dc;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  resize: none;
-  max-height: 90px;
-  line-height: 1.4;
-  transition: border-color 0.2s;
+  flex: 1; background: #1c1c1c; border: 1px solid #2a2a2a; border-radius: 10px;
+  padding: 9px 12px; color: #e8e4dc; font-size: 13px; outline: none;
+  resize: none; max-height: 90px; line-height: 1.4; transition: border-color 0.2s;
 }
 #gb-input:focus { border-color: #e8472a; }
 #gb-input::placeholder { color: #555; }
 #gb-send {
-  background: #e8472a;
-  border: none;
-  border-radius: 10px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s, transform 0.1s;
-  align-self: flex-end;
+  background: #e8472a; border: none; border-radius: 10px; width: 36px; height: 36px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.15s, transform 0.1s; align-self: flex-end;
 }
 #gb-send:hover { background: #c73a1f; }
 #gb-send:active { transform: scale(0.92); }
 #gb-send:disabled { background: #2a2a2a; cursor: not-allowed; }
 </style>
-
-<div id="gb-widget">
-  <div id="gb-badge">💬 Ask Grappling Buddy!</div>
-
-  <button id="gb-fab" onclick="gbToggle()" aria-label="Open Grappling Buddy chat">
-    <svg class="gb-icon-chat" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-    <svg class="gb-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
-      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  </button>
-
-  <div id="gb-panel">
-    <div id="gb-header">
-      <div id="gb-header-avatar">GB</div>
-      <div id="gb-header-info">
-        <div id="gb-header-name">GRAPPLING BUDDY</div>
-        <div id="gb-header-sub"><span class="gb-dot"></span>The Coop BJJ · Ask me anything</div>
-      </div>
-    </div>
-
-    <div id="gb-log">
-      <div class="gb-msg gb-bot">
-        <div class="gb-av">GB</div>
-        <div class="gb-bubble">Hey! 🥋 I'm Grappling Buddy. Ask me about memberships, schedule, drop-ins, or anything about The Coop BJJ!</div>
-      </div>
-    </div>
-
-    <div id="gb-chips">
-      <button class="gb-chip" onclick="gbAsk(this)">Pricing</button>
-      <button class="gb-chip" onclick="gbAsk(this)">Schedule</button>
-      <button class="gb-chip" onclick="gbAsk(this)">Free trial</button>
-      <button class="gb-chip" onclick="gbAsk(this)">Drop-ins</button>
-      <button class="gb-chip" onclick="gbAsk(this)">Kids classes</button>
-      <button class="gb-chip" onclick="gbAsk(this)">Location</button>
-    </div>
-
-    <div id="gb-input-row">
-      <textarea id="gb-input" rows="1" placeholder="Ask anything…"></textarea>
-      <button id="gb-send" onclick="gbSend()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-      </button>
+</head>
+<body>
+<div id="gb-panel">
+  <div id="gb-header">
+    <div id="gb-avatar">GB</div>
+    <div>
+      <div id="gb-name">GRAPPLING BUDDY</div>
+      <div id="gb-sub"><span class="gb-dot"></span>The Coop BJJ · Ask me anything</div>
     </div>
   </div>
+  <div id="gb-log">
+    <div class="msg bot">
+      <div class="av">GB</div>
+      <div class="bubble">Hey! 🥋 I'm Grappling Buddy. Ask me about memberships, schedule, drop-ins, or anything about The Coop BJJ!</div>
+    </div>
+  </div>
+  <div id="gb-chips">
+    <button class="chip" onclick="ask(this)">Pricing</button>
+    <button class="chip" onclick="ask(this)">Schedule</button>
+    <button class="chip" onclick="ask(this)">Free trial</button>
+    <button class="chip" onclick="ask(this)">Drop-ins</button>
+    <button class="chip" onclick="ask(this)">Kids classes</button>
+    <button class="chip" onclick="ask(this)">Location</button>
+  </div>
+  <div id="gb-input-row">
+    <textarea id="gb-input" rows="1" placeholder="Ask anything…"></textarea>
+    <button id="gb-send" onclick="send()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
 </div>
-
 <script>
-(function() {
-  // ✅ Points to your Cloudflare Worker — API key is hidden server-side
-  const WORKER_URL = "https://grapplingbuddy.howie-b81.workers.dev";
+const WORKER = "https://grapplingbuddy.howie-b81.workers.dev";
+let history = [];
 
-  let gbHistory = [];
-  let gbOpen = false;
+function ask(chip) {
+  document.getElementById('gb-chips').style.display = 'none';
+  document.getElementById('gb-input').value = chip.textContent;
+  send();
+}
 
-  window.gbToggle = function() {
-    gbOpen = !gbOpen;
-    document.getElementById('gb-panel').classList.toggle('open', gbOpen);
-    document.getElementById('gb-fab').classList.toggle('open', gbOpen);
-    document.getElementById('gb-badge').style.display = 'none';
-    if (gbOpen) setTimeout(() => document.getElementById('gb-input').focus(), 300);
-  };
+function addMsg(role, text) {
+  const log = document.getElementById('gb-log');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'av';
+  av.textContent = role === 'bot' ? 'GB' : 'YOU';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+  wrap.appendChild(av);
+  wrap.appendChild(bubble);
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
 
-  window.gbAsk = function(chip) {
-    document.getElementById('gb-chips').style.display = 'none';
-    document.getElementById('gb-input').value = chip.textContent;
-    gbSend();
-  };
+function addTyping() {
+  const log = document.getElementById('gb-log');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot typing';
+  wrap.id = 'typing';
+  const av = document.createElement('div');
+  av.className = 'av';
+  av.textContent = 'GB';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = '<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
+  wrap.appendChild(av);
+  wrap.appendChild(bubble);
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
 
-  function gbAddMsg(role, text) {
-    const log = document.getElementById('gb-log');
-    const wrap = document.createElement('div');
-    wrap.className = `gb-msg gb-${role}`;
-    const av = document.createElement('div');
-    av.className = 'gb-av';
-    av.textContent = role === 'bot' ? 'GB' : 'YOU';
-    const bubble = document.createElement('div');
-    bubble.className = 'gb-bubble';
-    bubble.textContent = text;
-    wrap.appendChild(av);
-    wrap.appendChild(bubble);
-    log.appendChild(wrap);
-    log.scrollTop = log.scrollHeight;
+async function send() {
+  const input = document.getElementById('gb-input');
+  const btn = document.getElementById('gb-send');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('gb-chips').style.display = 'none';
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  btn.disabled = true;
+  addTyping();
+  try {
+    const res = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history })
+    });
+    const data = await res.json();
+    const reply = (data.content || []).find(b => b.type === 'text')?.text
+      || 'Sorry! Reach us at info@thecoopbjj.com or (949) 294-7172.';
+    document.getElementById('typing')?.remove();
+    addMsg('bot', reply);
+    history.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    addMsg('bot', 'Connection issue. Contact info@thecoopbjj.com or (949) 294-7172 🥋');
   }
+  btn.disabled = false;
+}
 
-  function gbAddTyping() {
-    const log = document.getElementById('gb-log');
-    const wrap = document.createElement('div');
-    wrap.className = 'gb-msg gb-bot gb-typing';
-    wrap.id = 'gb-typing';
-    const av = document.createElement('div');
-    av.className = 'gb-av';
-    av.textContent = 'GB';
-    const bubble = document.createElement('div');
-    bubble.className = 'gb-bubble';
-    bubble.innerHTML = '<div class="gb-tdot"></div><div class="gb-tdot"></div><div class="gb-tdot"></div>';
-    wrap.appendChild(av);
-    wrap.appendChild(bubble);
-    log.appendChild(wrap);
-    log.scrollTop = log.scrollHeight;
-  }
-
-  function gbRemoveTyping() {
-    const el = document.getElementById('gb-typing');
-    if (el) el.remove();
-  }
-
-  window.gbSend = async function() {
-    const input = document.getElementById('gb-input');
-    const btn = document.getElementById('gb-send');
-    const text = input.value.trim();
-    if (!text) return;
-
-    input.value = '';
-    input.style.height = 'auto';
-    document.getElementById('gb-chips').style.display = 'none';
-
-    gbAddMsg('user', text);
-    gbHistory.push({ role: 'user', content: text });
-    btn.disabled = true;
-    gbAddTyping();
-
-    try {
-      const res = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: gbHistory })
-      });
-
-      const data = await res.json();
-      const reply = (data.content || []).find(b => b.type === 'text')?.text
-        || 'Sorry, something went wrong! Reach us at info@thecoopbjj.com or call (949) 294-7172.';
-
-      gbRemoveTyping();
-      gbAddMsg('bot', reply);
-      gbHistory.push({ role: 'assistant', content: reply });
-    } catch(e) {
-      gbRemoveTyping();
-      gbAddMsg('bot', 'Having trouble connecting. Please contact us directly at info@thecoopbjj.com or (949) 294-7172 🥋');
-    }
-
-    btn.disabled = false;
-  };
-
-  const ta = document.getElementById('gb-input');
-  ta.addEventListener('input', () => {
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 90) + 'px';
-  });
-  ta.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); gbSend(); }
-  });
-
-  setTimeout(() => {
-    const badge = document.getElementById('gb-badge');
-    if (badge) badge.style.opacity = '0';
-  }, 6000);
-})();
+const ta = document.getElementById('gb-input');
+ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 90) + 'px'; });
+ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
 </script>
+</body>
+</html>
