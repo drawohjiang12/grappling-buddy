@@ -8,66 +8,74 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
 html, body { width: 100%; height: 100%; background: transparent; overflow: hidden; }
+
 #gb-panel {
   position: fixed; bottom: 0; right: 0; width: 100%; height: 100%;
   background: #0f0f0f; display: flex; flex-direction: column; overflow: hidden;
 }
 #gb-header {
   background: #141414; border-bottom: 1px solid #2a2a2a;
-  padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+  padding: 12px 14px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
 }
 #gb-avatar {
-  width: 38px; height: 38px; background: #e8472a; border-radius: 50%;
+  width: 34px; height: 34px; background: #e8472a; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: #fff;
-  flex-shrink: 0; box-shadow: 0 0 14px rgba(232,71,42,0.3);
+  font-family: 'Bebas Neue', sans-serif; font-size: 12px; color: #fff;
+  flex-shrink: 0; box-shadow: 0 0 12px rgba(232,71,42,0.3);
 }
-#gb-name { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1.5px; color: #e8e4dc; line-height: 1; }
-#gb-sub { font-size: 11px; color: #666; margin-top: 2px; }
-.gb-dot { display: inline-block; width: 6px; height: 6px; background: #4caf50; border-radius: 50%; margin-right: 4px; animation: pulse 2s infinite; }
+#gb-name { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1.5px; color: #e8e4dc; line-height: 1; }
+#gb-sub { font-size: 10px; color: #666; margin-top: 2px; }
+.gb-dot { display: inline-block; width: 5px; height: 5px; background: #4caf50; border-radius: 50%; margin-right: 4px; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
 #gb-log {
-  flex: 1; overflow-y: auto; padding: 14px 14px 8px;
-  display: flex; flex-direction: column; gap: 12px;
+  flex: 1; overflow-y: auto; padding: 12px 12px 6px;
+  display: flex; flex-direction: column; gap: 10px;
   scrollbar-width: thin; scrollbar-color: #2a2a2a transparent;
 }
-.msg { display: flex; gap: 8px; animation: fadein 0.2s ease; }
-@keyframes fadein { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+.msg { display: flex; gap: 7px; animation: fadein 0.2s ease; }
+@keyframes fadein { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
 .msg.user { flex-direction: row-reverse; }
 .av {
-  width: 28px; height: 28px; border-radius: 50%;
-  font-size: 10px; font-family: 'Bebas Neue', sans-serif;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  font-size: 9px; font-family: 'Bebas Neue', sans-serif;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
 }
 .msg.bot .av  { background: #e8472a; color: #fff; }
 .msg.user .av { background: #2a2a2a; color: #aaa; }
-.bubble { max-width: 78%; padding: 10px 13px; border-radius: 14px; font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
-.msg.bot  .bubble { background:#1c1c1c; border:1px solid #2a2a2a; border-bottom-left-radius:4px; color:#e8e4dc; }
-.msg.user .bubble { background:#e8472a; border-bottom-right-radius:4px; color:#fff; }
-.typing .bubble { display:flex; gap:4px; align-items:center; }
-.tdot { width:6px;height:6px;background:#555;border-radius:50%;animation:blink 1.2s infinite; }
+.bubble {
+  max-width: 82%; padding: 9px 12px; border-radius: 13px;
+  font-size: 12.5px; line-height: 1.55;
+}
+.msg.bot  .bubble { background:#1c1c1c; border:1px solid #2a2a2a; border-bottom-left-radius:3px; color:#e8e4dc; }
+.msg.user .bubble { background:#e8472a; border-bottom-right-radius:3px; color:#fff; }
+
+.typing .bubble { display:flex; gap:4px; align-items:center; padding: 12px; }
+.tdot { width:5px;height:5px;background:#555;border-radius:50%;animation:blink 1.2s infinite; }
 .tdot:nth-child(2){animation-delay:0.2s;} .tdot:nth-child(3){animation-delay:0.4s;}
 @keyframes blink { 0%,80%,100%{opacity:0.3;transform:scale(0.85);} 40%{opacity:1;transform:scale(1);} }
-#gb-chips { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+#gb-chips { padding: 0 12px 8px; display: flex; gap: 5px; flex-wrap: wrap; }
 .chip {
   background: transparent; border: 1px solid #2a2a2a; color: #777;
-  padding: 5px 11px; border-radius: 20px; font-size: 11px;
+  padding: 4px 10px; border-radius: 20px; font-size: 10.5px;
   cursor: pointer; transition: all 0.15s; white-space: nowrap;
 }
 .chip:hover { border-color:#e8472a; color:#e8e4dc; background:rgba(232,71,42,0.08); }
+
 #gb-input-row {
-  display: flex; gap: 8px; padding: 10px 12px 14px;
+  display: flex; gap: 7px; padding: 8px 10px 12px;
   border-top: 1px solid #1e1e1e; background: #0f0f0f; flex-shrink: 0;
 }
 #gb-input {
-  flex: 1; background: #1c1c1c; border: 1px solid #2a2a2a; border-radius: 10px;
-  padding: 9px 12px; color: #e8e4dc; font-size: 13px; outline: none;
-  resize: none; max-height: 90px; line-height: 1.4; transition: border-color 0.2s;
+  flex: 1; background: #1c1c1c; border: 1px solid #2a2a2a; border-radius: 9px;
+  padding: 8px 11px; color: #e8e4dc; font-size: 12.5px; outline: none;
+  resize: none; max-height: 80px; line-height: 1.4; transition: border-color 0.2s;
 }
 #gb-input:focus { border-color: #e8472a; }
 #gb-input::placeholder { color: #555; }
 #gb-send {
-  background: #e8472a; border: none; border-radius: 10px; width: 36px; height: 36px;
+  background: #e8472a; border: none; border-radius: 9px; width: 32px; height: 32px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; transition: background 0.15s, transform 0.1s; align-self: flex-end;
 }
@@ -102,7 +110,7 @@ html, body { width: 100%; height: 100%; background: transparent; overflow: hidde
   <div id="gb-input-row">
     <textarea id="gb-input" rows="1" placeholder="Ask anything…"></textarea>
     <button id="gb-send" onclick="send()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
       </svg>
     </button>
@@ -127,7 +135,8 @@ function addMsg(role, text) {
   av.textContent = role === 'bot' ? 'GB' : 'YOU';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  bubble.textContent = text;
+  // Clean up markdown bold formatting
+  bubble.textContent = text.replace(/\*\*(.*?)\*\*/g, '$1');
   wrap.appendChild(av);
   wrap.appendChild(bubble);
   log.appendChild(wrap);
@@ -140,13 +149,11 @@ function addTyping() {
   wrap.className = 'msg bot typing';
   wrap.id = 'typing';
   const av = document.createElement('div');
-  av.className = 'av';
-  av.textContent = 'GB';
+  av.className = 'av'; av.textContent = 'GB';
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
   bubble.innerHTML = '<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
-  wrap.appendChild(av);
-  wrap.appendChild(bubble);
+  wrap.appendChild(av); wrap.appendChild(bubble);
   log.appendChild(wrap);
   log.scrollTop = log.scrollHeight;
 }
@@ -156,8 +163,7 @@ async function send() {
   const btn = document.getElementById('gb-send');
   const text = input.value.trim();
   if (!text) return;
-  input.value = '';
-  input.style.height = 'auto';
+  input.value = ''; input.style.height = 'auto';
   document.getElementById('gb-chips').style.display = 'none';
   addMsg('user', text);
   history.push({ role: 'user', content: text });
@@ -183,7 +189,7 @@ async function send() {
 }
 
 const ta = document.getElementById('gb-input');
-ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 90) + 'px'; });
+ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 80) + 'px'; });
 ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
 </script>
 </body>
